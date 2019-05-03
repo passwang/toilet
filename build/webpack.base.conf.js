@@ -12,6 +12,9 @@ module.exports = {
   externals: {
     'AMap': 'AMap'
   },
+  // externals: {
+  //   'BMap': 'BMap'
+  // },
   entry: {
     app: './src/main.js'
   },

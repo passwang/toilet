@@ -40,7 +40,7 @@ export default {
       ]
     }
   },
-  created() {
+  mounted() {
     this.loadUser()
   },
   methods: {
@@ -61,6 +61,13 @@ export default {
     onSelect() {
       doOut()
       this.$router.go(0)
+    }
+  },
+  watch: {
+    $route(to, from) {
+      if (from.name === 'edit') {
+        this.loadUser()
+      }
     }
   }
 }

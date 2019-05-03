@@ -85,7 +85,7 @@ router.post('/doReset', (req, res, next) => {
 
 // 获取session
 router.get('/getSession', (req, res, next) => {
-  req.session.login ? res.send(req.sessionID) : res.send('false');
+  req.session.login ? res.send(req.session.username) : res.send('false');
 })
 
 // 退出

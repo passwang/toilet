@@ -88,17 +88,16 @@ const router = new Router({
     }
   ]
 })
+
+checkLogin().then(res => {
+  localStorage.setItem('user', res)
+})
+
 router.beforeEach((to, from, next) => {
-  // checkLogin().then(res => {
-  //   if (res === false && to.path !== '/login') {
-  //     if (to.path === '/regist') {
-  //       next({name: 'regist'})
-  //     } else {
-  //       next({name: 'login'})
-  //     }
-  //   } else {
-  //     next()
-  //   }
-  // })
+  if (localStorage.getItem('user') === false && to.name !== 'login') {
+    next('/login')
+  } else {
+    next()
+  }
 })
 export default router

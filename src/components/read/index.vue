@@ -87,7 +87,7 @@ export default {
       //   duration: '200'
       // })
       handleSearch(params).then(res => {
-        const data = res.data
+        const data = res[0]
         this.list = data
       })
     },

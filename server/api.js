@@ -88,6 +88,7 @@ exports.submitComment = function(req, res, next) {
   //user
   exports.getUser = function(req, res, next) {
     const username = req.session.username
+    console.log(username)
     db.find('users',{'username': username}, function(err, result) {
         if(err) {
             return res.send('-1');
@@ -98,11 +99,11 @@ exports.submitComment = function(req, res, next) {
   exports.updateName = function(req, res, next) {
     const newName = req.query.username
     const oldName = req.session.username
-    db.find('users',{'username': oldName}, {$set:{"username": newName}}, function(err, result) {
+    db.update('users',{'username': oldName}, {$set:{"username": newName}}, function(err, result) {
         if(err) {
             return res.send('-1');
         }
-      req.session.username = oldName
+      req.session.username = newName
       return res.send({status: true})
     })
   }

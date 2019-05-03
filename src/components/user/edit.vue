@@ -43,6 +43,13 @@ export default {
         path: '/user'
       })
     }
+  },
+  watch: {
+    $route(to, from) {
+      if (to.name === 'edit') {
+        this.loadUser()
+      }
+    }
   }
 }
 </script>

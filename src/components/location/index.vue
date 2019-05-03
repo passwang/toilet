@@ -28,7 +28,7 @@ export default {
   },
   methods: {
     init() {
-      let _self = this;
+      let _self = this
       map = new AMap.Map('container', {
         // center: [108.90217, 34.154305],
         resizeEnable: false,
