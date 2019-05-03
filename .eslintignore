@@ -1,0 +1,5 @@
+build/*.js
+config/*.js
+components/location/index.vue
+/dist/
+/node_modules/
