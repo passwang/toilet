@@ -22,20 +22,7 @@ var num = []
 export default {
   components: {},
   mounted: function() {
-<<<<<<< HEAD
     this.init()
-=======
-    let _self = this
-    let promise = new Promise(function(resolve, reject) {
-      _self.init()
-      resolve()
-    })
-    promise
-      .then(function() {
-        _self.searchData()
-        // _self.demo()
-      })
->>>>>>> 7913ac186aeafff76ab62154688e2a797d4a86e7
   },
   data() {
     return {
