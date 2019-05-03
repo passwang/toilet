@@ -1,8 +1,14 @@
 <template>
+<<<<<<< HEAD
   <div id="map" style="width:100%; height:calc(100%)">
     <div id="container" style="width:100%; height:93%"></div>
     <div id="panel"></div>
     <!-- <van-button type="default">定位失败</van-button> -->
+=======
+  <div id="map" style="width:100%; height:600px">
+    <div id="container" style="width:100%; height:88%"></div>
+    <div id="panel"></div>
+>>>>>>> 7913ac186aeafff76ab62154688e2a797d4a86e7
   </div>
 </template>
 <script>
@@ -16,7 +22,20 @@ var num = []
 export default {
   components: {},
   mounted: function() {
+<<<<<<< HEAD
     this.init()
+=======
+    let _self = this
+    let promise = new Promise(function(resolve, reject) {
+      _self.init()
+      resolve()
+    })
+    promise
+      .then(function() {
+        _self.searchData()
+        // _self.demo()
+      })
+>>>>>>> 7913ac186aeafff76ab62154688e2a797d4a86e7
   },
   data() {
     return {
@@ -28,9 +47,9 @@ export default {
   },
   methods: {
     init() {
-      let _self = this
+      let _self = this;
       map = new AMap.Map('container', {
-        center: [108.939621, 34.343147],
+        // center: [108.90217, 34.154305],
         resizeEnable: false,
         zoom: 5
       })

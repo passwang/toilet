@@ -1,5 +1,8 @@
 build/*.js
 config/*.js
 components/location/index.vue
+<<<<<<< HEAD
 /dist/
 /node_modules/
+=======
+>>>>>>> 7913ac186aeafff76ab62154688e2a797d4a86e7

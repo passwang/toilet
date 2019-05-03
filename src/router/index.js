@@ -89,16 +89,16 @@ const router = new Router({
   ]
 })
 router.beforeEach((to, from, next) => {
-  checkLogin().then(res => {
-    if (res === false && to.path !== '/login') {
-      if (to.path === '/regist') {
-        next({name: 'regist'})
-      } else {
-        next({name: 'login'})
-      }
-    } else {
-      next()
-    }
-  })
+  // checkLogin().then(res => {
+  //   if (res === false && to.path !== '/login') {
+  //     if (to.path === '/regist') {
+  //       next({name: 'regist'})
+  //     } else {
+  //       next({name: 'login'})
+  //     }
+  //   } else {
+  //     next()
+  //   }
+  // })
 })
 export default router

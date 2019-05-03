@@ -1,4 +1,5 @@
 <template>
+<<<<<<< HEAD
   <div class="user">
       <van-nav-bar title="我的" @click-right="logout"><van-icon name="ellipsis" slot="right" /></van-nav-bar>
     <div class="user-message">
@@ -113,3 +114,7 @@ export default {
   color: #969799;
 }
 </style>
+=======
+    <h1>设置</h1>
+</template>
+>>>>>>> 7913ac186aeafff76ab62154688e2a797d4a86e7
