@@ -40,10 +40,25 @@ router.get('/read/getContent', (req, res, next) => {
 router.get('/read/search', (req, res, next) => {
   api.DoSearch(req, res, next)
 })
+router.post('/read/addList', (req, res, next) => {
+  api.addList(req, res, next)
+})
+router.post('/read/editList', (req, res, next) => {
+  api.editList(req, res, next)
+})
+router.get('/read/deleteList', (req, res, next) => {
+  api.deleteList(req, res, next)
+})
 
 // comment页面
 router.post('/comment/submit', upload.array('file[]', 3), (req, res, next) => {
   api.submitComment(req, res, next)
+})
+router.get('/comment/getList', (req, res, next) => {
+  api.getComments(req, res, next)
+})
+router.post('/comment/saveList',(req, res, next) => {
+  api.saveComments(req, res, next)
 })
 
 // user页面
@@ -82,10 +97,12 @@ router.post('/doReset', (req, res, next) => {
   api.doReset(req, res, next)
 })
 
-
+router.post('/admin/login', (req, res, next) => {
+  api.doAdminLogin(req, res, next)
+})
 // 获取session
 router.get('/getSession', (req, res, next) => {
-  req.session.login ? res.send(req.session.username) : res.send('false');
+  req.session.login ? res.send(req.session.username) : res.send('');
 })
 
 // 退出
@@ -97,5 +114,4 @@ router.post('/user/logout', (req, res, next) => {
   });
   res.end();
 })
-
 module.exports = router;

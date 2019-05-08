@@ -10,7 +10,7 @@
     </van-cell-group>
    <van-collapse v-model="activeNames">
         <van-collapse-item title="我的反馈" name="2" icon="user-o">
-           <van-cell v-for="(item,index) in comment" :key="index" :value="item" class="user-comment"></van-cell>
+           <van-cell v-for="(item,index) in comments" :key="index" :value="item" class="user-comment"></van-cell>
         </van-collapse-item>
     </van-collapse>
     <van-actionsheet
@@ -31,7 +31,7 @@ export default {
       activeNames: ['2'],
       username: '',
       img: '',
-      comment: '',
+      comments: '',
       show: false,
       actions: [
         {
@@ -49,7 +49,7 @@ export default {
         const data = res[0]
         this.username = data.username
         this.img = data.avatar
-        this.comment = data.comment.length === 0 ? ['你还没有反馈哦'] : data.comment
+        this.comments = data.comments.length === 0 ? ['你还没有反馈哦'] : data.comments
       })
     },
     onCancel() {
@@ -59,8 +59,16 @@ export default {
       this.show = true
     },
     onSelect() {
+      localStorage.clear()
       doOut()
-      this.$router.go(0)
+      this.$toast.loading({
+        mask: true,
+        duration: '500',
+        message: '您将跳转到登录页面'
+      })
+      this.$router.push({
+        path: '/login'
+      })
     }
   },
   watch: {
@@ -80,17 +88,18 @@ export default {
   background: #f8f8f8;
 }
 .user  .van-nav-bar {
-    background:  #ff9999;
+    background: #ff4d4d;
+    border: none;
 }
 .user [class*=van-hairline]::after {
-    border: none;
+  border: none;
 }
 .user .van-nav-bar__title {
     color: #ffffff;
 }
 .user .user-message {
     height: 40%;
-    background:  #ff9999;
+    background:   #ff4d4d;
     display: flex;
     align-items: center;
     justify-content:center;
@@ -102,6 +111,7 @@ export default {
     border-radius: 50%;
 }
 .user .user-message .user-name {
+  margin-top: 2em;
   color: #ffffff;
 }
 .user .van-cell__left-icon  {

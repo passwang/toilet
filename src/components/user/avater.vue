@@ -10,7 +10,7 @@
         <van-icon name="ellipsis" slot="right"/>
        </van-nav-bar>
         <div class="img-con">
-            <img :src="image" width="300em">
+            <img :src="avatar" width="300em" ref="logo">
         </div>
         <van-actionsheet
             v-model="show"
@@ -23,7 +23,6 @@
            <van-uploader :after-read="onRead" accept="image/×">
                 <van-icon name="photograph" />
             </van-uploader>
-            </form>
           </div>
         </van-actionsheet>
   </div>
@@ -36,12 +35,12 @@ export default {
     return {
       actions: [],
       show: false,
-      image: '',
+      avatar: '',
       file: ''
     }
   },
   created() {
-    this.image = this.$route.params.avatar
+    this.avatar = '/static/avatars/' + this.$route.params.avatar
   },
   methods: {
     onClickLeft() {
@@ -58,7 +57,8 @@ export default {
         message: '加载中...',
         duration: '200'
       })
-      this.image = file.content
+      console.log(file)
+      this.avatar = file.content
       // 写入数据库
       this.handleAvatar()
     },

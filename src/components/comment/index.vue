@@ -81,7 +81,7 @@ export default {
       formData.append('username', this.username)
       formData.append('phone', this.phone)
       formData.append('address', this.address)
-      formData.append('desc', this.message)
+      formData.append('comment', this.message)
       for (let i = 0; i < this.filesArr.length; i++) {
         formData.append('file[]', this.filesArr[i])
       }

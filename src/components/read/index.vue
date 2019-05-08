@@ -50,13 +50,6 @@ export default {
   },
   methods: {
     onLoad() {
-      // setTimeout(() => {
-      //   this.loadInfo()
-      //   this.loading = false
-      //   if (this.list && this.list.length >= 40) {
-      //     this.finished = true
-      //   }
-      // }, 500)
     },
     loadInfo() {
       getReadList().then(res => {
@@ -87,7 +80,7 @@ export default {
       //   duration: '200'
       // })
       handleSearch(params).then(res => {
-        const data = res[0]
+        const data = res
         this.list = data
       })
     },
@@ -101,14 +94,14 @@ export default {
       this.loading = false
     },
     selectItem(item) {
-      if (!item.id) {
+      if (!item._id) {
         this.$router.push({
           path: '/read'
         })
       } else {
         this.$router.push({
           path: `/read/detail`,
-          query: { id: item.id, flag: item.flag }
+          query: { id: item._id, flag: item.flag }
         })
       }
     }

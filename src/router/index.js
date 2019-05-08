@@ -29,75 +29,126 @@ const router = new Router({
       children: [
         {
           path: '/home',
-          component: Location
+          name: 'home',
+          component: Location,
+          meta: {
+            isLogin: true
+          }
         },
         {
           path: '/read',
-          component: Read
+          component: Read,
+          meta: {
+            isLogin: true
+          }
         },
         {
           path: '/read/detail',
-          component: ReadContent
+          component: ReadContent,
+          meta: {
+            isLogin: true
+          }
         },
         {
           path: '/comment',
-          component: Comments
+          component: Comments,
+          meta: {
+            isLogin: true
+          }
         },
         {
           path: '/user',
-          component: User
+          component: User,
+          meta: {
+            isLogin: true
+          }
         },
         {
           name: 'edit',
           path: '/user/edit',
-          component: Edit
+          component: Edit,
+          meta: {
+            isLogin: true
+          }
         },
         {
           name: 'Editavatar',
           path: '/user/edit/avater',
-          component: Avater
+          component: Avater,
+          meta: {
+            isLogin: true
+          }
         },
         {
           name: 'Editname',
           path: '/user/edit/name',
-          component: Username
+          component: Username,
+          meta: {
+            isLogin: true
+          }
         }
       ]
     },
     {
       name: 'login',
       path: '/login',
-      component: Login
+      component: Login,
+      meta: {
+        isLogin: false
+      }
     },
     {
       name: 'regist',
       path: '/regist',
-      component: Regist
+      component: Regist,
+      meta: {
+        isLogin: false
+      }
     },
     {
       path: '/forget',
-      component: Forget
+      component: Forget,
+      meta: {
+        isLogin: false
+      }
     },
     {
       path: '/regist/result',
-      component: registSuccess
+      component: registSuccess,
+      meta: {
+        isLogin: false
+      }
     },
     {
       path: '/reset',
-      component: Reset
+      component: Reset,
+      meta: {
+        isLogin: false
+      }
     }
   ]
 })
 
-checkLogin().then(res => {
-  localStorage.setItem('user', res)
-})
-
 router.beforeEach((to, from, next) => {
-  if (localStorage.getItem('user') === false && to.name !== 'login') {
-    next('/login')
-  } else {
+  checkLogin().then(res => {
+    localStorage.setItem('user', res)
+  })
+  const user = localStorage.getItem('user')
+  if(user){
     next()
+    if (!to.meta.isLogin) {
+      next({
+        path: '/home'
+      })
+    }
+  }else{
+    if(to.meta.isLogin){
+      next({
+        path: '/login',
+      })
+    }else{
+      next()
+    }
   }
 })
 export default router

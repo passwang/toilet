@@ -8,45 +8,62 @@ var path = require("path");
 var request = require('request');
 const querystring = require('querystring');
 const config = require('./config.js');
-// exports.userLogin = function(req, res, next) {
-//     var form = new formidable.IncomingForm();
-//     form.parse(req, function (err, fields, files) {
-//         var username = fields.username;
-//         var password = crypto(fields.password);
-//         //查询数据库
-//         db.find("users", { "username": username }, function (err, result) {
-//             if (err) {
-//                 res.send("-3")
-//                 return;
-//             }
-//             if (result.length == 0) {
-//                 res.send("-2");//用户名不存在
-//             } else {
-//                if(password === result[0].password) {
-//                    req.session.login = "1";
-//                    req.session.username = username;
-//                    res.send("1");//登录成功
-//                } else {
-//                    res.send("-1");//密码错误
-//                }
-//             }
-//         })
-//     });   
-// }
-
+var ObjectId = require('mongodb').ObjectId
 // read
 exports.getReadList = function(req, res, next) {
   db.find('reads',{}, function(err, result) {
       if(err) {
-          return res.send('-1');
+        return res.send('-1');
       }
     return res.send(result)
   })
 }
+exports.addList = function(req, res, next) {
+  const param = {
+    'title': req.body.title,
+    'img': req.body.img,
+    'desc': req.body.desc,
+    'content1': req.body.content1,
+    'content2': req.body.content2,
+    'flag': req.body.flag
+  }
+  db.insertArray('reads',[param], function(err, result) {
+    if(err) {
+        return res.send('-1');
+    }
+  return res.send({status: true})
+})
+}
+exports.editList = function(req, res, next) {
+  const param = {
+    'title': req.body.title,
+    'img': req.body.img,
+    'desc': req.body.desc,
+    'content1': req.body.content1,
+    'content2': req.body.content2,
+    'flag': req.body.flag
+  }
+  const id =  req.body._id
+  db.update('reads',{'_id': ObjectId(id)}, {$set: param}, function(err, result) {
+    if(err) {
+        return res.send('-1');
+    }
+  return res.send({status: true})
+})
+}
+exports.deleteList = function(req, res, next) {
+  const id =  ObjectId(req.query._id)
+  db.delete('reads',{'_id': id}, function(err, result) {
+    if(err) {
+        return res.send('-1');
+    }
+  return res.send({status: true})
+})
+}
 exports.getReadContent = function(req, res, next) {
-    const readID = req.query.id
+    const readID =  ObjectId(req.query.id)
     const flag = req.query.flag
-    db.find('reads', {'id': readID, 'flag': flag}, function(err, result) {
+    db.find('reads', {'_id': readID, 'flag': flag}, function(err, result) {
         if(err) {
             return res.send('-1');
         } else {
@@ -84,17 +101,47 @@ exports.submitComment = function(req, res, next) {
         }
     })
   }
+  exports.getComments = function(req, res, next) {
+    db.find('comments', {}, function(err, result) {
+       if(err) {
+           return res.send('-1');
+       } else {
+       return res.send(result)
+       }
+   })
+ }
+ exports.saveComments = function(req, res, next) {
+  const id = ObjectId(req.body._id)
+  const number = parseInt(req.body.number)
+    db.update('comments',{'_id': id}, {$set: {'number': number}}, function(err, result) {
+      if(err) {
+        return res.send('-1');
+      }
+      return res.send({status: true})
+  })
+}
 
   //user
   exports.getUser = function(req, res, next) {
     const username = req.session.username
-    console.log(username)
-    db.find('users',{'username': username}, function(err, result) {
+    db.find('users',{'username': username}, function(err, data) {
         if(err) {
             return res.send('-1');
         }
-      return res.send(result)
+    db.find('comments',{'username': username}, function(err, comments) {
+      if(err) {
+          return res.send('-1');
+      }
+      const arr = [];
+      if (comments.length > 0) {
+        comments.forEach(item => {
+          arr.push(item.comment)
+        })
+      } 
+      var result = Object.assign(data[0],{'comments': arr})
+      return res.send([result])
     })
+  })
   }
   exports.updateName = function(req, res, next) {
     const newName = req.query.username
@@ -170,16 +217,14 @@ exports.submitComment = function(req, res, next) {
 //   }
 // })
 }
-// 注册验证
+// 注册
 exports.doRegist = function(req, res, next) {
-  console.log(req.session.mobile)
   if (parseInt(req.body.sms) === req.session.mobile) {
     const params = {
       'username': req.body.username,
       'password': crypto(req.body.password),
       'mobile': parseInt(req.body.mobile),
-      'avatar': 'user.png',
-      'comment': []
+      'avatar': 'user.png'
     }
     const username = req.body.username
     db.insertArray('users', [params], function(err, result) {
@@ -244,7 +289,6 @@ exports.doLogin = function(req, res, next) {
 }
 // 忘记密码
 exports.checkForget = function(req, res, next) {
-  console.log(req.session.mobile)
   if (parseInt(req.body.sms) === req.session.mobile) {
    res.send({status: true})
   } else {
@@ -263,4 +307,29 @@ exports.doReset = function(req, res, next) {
         }
       return res.send({status: true})
   })
+}
+
+// 管理员登录
+exports.doAdminLogin = function(req, res, next) {
+  const username = req.body.username
+  const password = req.body.password
+  db.find('admins',{'username': username}, function(err, result) {
+    if(err) {
+        return res.send('-1');
+    } else if (result.length === 0) {
+      return res.send({
+        status: false,
+        message: '用户名不存在'
+      }) 
+    }else if (password === result[0].password) {
+        req.session.login = true
+        req.session.username = username;
+        return res.send({status: true, data:{ 'token': crypto(123456)}});
+    } else {
+      return res.send({
+        status: false,
+        message: '用户名和密码不匹配!'
+      })
+    }
+})
 }

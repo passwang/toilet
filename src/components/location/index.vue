@@ -1,11 +1,13 @@
 <template>
   <div id="map" style="width:100%; height:calc(100%)">
-    <div id="container" style="width:100%; height:93%"></div>
-    <div id="panel"></div>
-    <!-- <van-button type="default">定位失败</van-button> -->
+    <div id="container" style="width:100%; height:93%">
+    </div>
+    <van-button type="primary" class="btn" size="small" @click="handleShow">点击展开/收缩列表</van-button>
+    <div id="panel" v-show="show"></div>
   </div>
 </template>
 <script>
+
 import AMap from 'AMap'
 var mapListText = []
 //  var geolocation, markers
@@ -23,7 +25,10 @@ export default {
       listCount: listCount,
       listText: mapListText,
       center: [],
-      num: num
+      num: num,
+      lng: '108.90217',
+      lat: '34.154305',
+      show:  false 
     }
   },
   methods: {
@@ -45,12 +50,14 @@ export default {
         map.addControl(geolocation)
         geolocation.getCurrentPosition(function(status, result) {
           if (status === 'complete') {
+            // 暂时固定
             _self.searchData(result.position.lng, result.position.lat)
           } else {
             // 定位失败
             console.log(result)
           }
         })
+        // _self.searchData( _self.lng, _self.lat)
       })
       AMap.plugin(
         ['AMap.Geolocation', 'AMap.PlaceSearch', 'AMap.ToolBar'],
@@ -61,7 +68,6 @@ export default {
     },
     searchData(lng, lat) {
       let keyWords = ['公共厕所', '卫生间']
-      let distance = [1000, 3000, 3000, 3000]
       placeSearchOptions = {
         // 构造地点查询类
         pageSize: 5,
@@ -77,22 +83,16 @@ export default {
         map.clearMap() // 清除地图覆盖物
         placeSearch = new AMap.PlaceSearch(placeSearchOptions)
         for (let i = 0; i < keyWords.length; i++) {
-          placeSearch.searchNearBy(keyWords[i], [lng, lat], distance[i], function(status, result) {
+          placeSearch.searchNearBy(keyWords[i], [lng, lat], 1000, function(status, result) {
             console.log(result)
             const pois = result.poiList.pois
-            pois.forEach(item => {
+            pois.forEach((item, index) => {
               var marker = new AMap.Marker({
                 map: map,
                 position: [item.location.lng, item.location.lat],
-                content: '<div class="content">评分</div>'
+                content: '<div class="content">距离您' + item.distance + '米</div>'
               })
               // 根据搜索出来的结果添加marker
-              // var marker = []
-              // marker[i] = new AMap.Marker({
-              //   position: item.location,
-              //   title: item.name
-              // })
-              // map.add(marker[i])
               var infoWindow = new AMap.InfoWindow({
                 offset: new AMap.Pixel(0, -31)
               })
@@ -101,10 +101,14 @@ export default {
           })
         }
       })
+    },
+    handleShow() {
+      this.show = !this.show
     }
   }
 }
 </script>
+
 <style>
 
 #map {
@@ -118,6 +122,18 @@ export default {
   height: 100%;
   font-size: 15px;
 }
+#map .btn {
+   position: fixed;
+    max-height: 90%;
+    overflow-y: auto;
+    top: 10px;
+    right: 10px;
+    background: #07c160;
+    z-index: 999;
+}
+#map .btn .van-button--primary {
+  background: #07c160;
+}
 #panel {
     position: fixed;
     background-color: white;
@@ -126,18 +142,19 @@ export default {
     top: 10px;
     right: 10px;
     width: 280px;
-    border-bottom: solid 1px silver;
+    /* border-bottom: solid 1px silver; */
 }
 .content{
   position: relative;
   left: 2em;
-  width: 5em;
+  width: 10em;
   height: 2em;
   line-height: 2em;
   border-radius: 5px;
   background-color:#FFF;
   text-align: center;
   font-size: 0.8em;
+  border:1px solid #ccc;
 }
 .content:before{
     content:"";display:block;

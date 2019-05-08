@@ -21,11 +21,11 @@ const Message = msg => {
     forbidClick: true
   })
 }
-const service = axios.create({
-  baseURL: process.env.BASE_URL,
-  withCredentials: true
+var service = axios.create({
+  baseURL: process.env.BASE_URL
+  // withCredentials: true
   // timeout: 5000
-})
+});
 
 service.interceptors.request.use(
   config => {

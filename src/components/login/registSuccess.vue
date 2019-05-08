@@ -22,6 +22,7 @@ export default {
       })
     },
     ToHome() {
+      // this.$router.go(0)
       this.$router.push({
         path: '/'
       })
