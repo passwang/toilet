@@ -9,6 +9,31 @@ var request = require('request');
 const querystring = require('querystring');
 const config = require('./config.js');
 var ObjectId = require('mongodb').ObjectId
+
+
+
+exports.filterAddress = function(req, res, next) {
+ const data = JSON.parse(req.body.place)
+ const resultData = []
+ var promise = new Promise(function (resolve, reject) {
+ data.forEach((item, index) => {
+    db.find('comments', { $and: [{'address': {'$regex': item}},{'number': {'$lte': 2}}]}, function(err, result) {
+      if(err) {
+        return res.send('-1');
+      } else {
+        if(result.length > 0) {
+          resultData.push(index)
+        }
+      }
+      resolve(resultData)
+    })
+  })
+ });
+promise.then(data => {
+    res.send(data)
+ })
+}
+
 // read
 exports.getReadList = function(req, res, next) {
   db.find('reads',{}, function(err, result) {

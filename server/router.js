@@ -25,11 +25,10 @@ var storage2 = multer.diskStorage({
 })
 var avatar = multer({ storage: storage2 })
 
-
-
-// router.get('/', (req, res, next) => {
-//   res.send('home')
-// })
+// location页面
+router.post('/location/filter', (req, res, next) => {
+  api.filterAddress(req, res, next);
+})
 // read页面
 router.get('/read/getList', (req, res, next) => {
  api.getReadList(req, res, next);
