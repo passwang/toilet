@@ -3,11 +3,13 @@
         <van-nav-bar
             :title="readDetail.title"
             left-text="返回"
-            right-text="按钮"
+          
             left-arrow
             @click-left="onClickLeft"
         >
-          <van-button class="view-button" type="default" slot="right"><van-icon name="eye-o" class="view-icon"/>{{readDetail.views}}  views</van-button>
+          <!-- <van-button class="view-button" type="default" slot="right">
+            <van-icon name="eye-o" class="view-icon"/>{{readDetail.views}}  views
+        </van-button> -->
         </van-nav-bar>
         <van-notice-bar wrapable :scrollable="false">{{readDetail.content1}}</van-notice-bar>
         <div class="read-img"><img :src="readDetail.img" style="padding:2px;border:1px solid #999"></div>

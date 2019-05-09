@@ -22,7 +22,7 @@ exports.filterAddress = function(req, res, next) {
         return res.send('-1');
       } else {
         if(result.length > 0) {
-          resultData.push(index)
+          resultData.push(result[0].address)
         }
       }
       resolve(resultData)
@@ -30,6 +30,7 @@ exports.filterAddress = function(req, res, next) {
   })
  });
 promise.then(data => {
+  console.log(data)
     res.send(data)
  })
 }

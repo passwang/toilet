@@ -49,16 +49,16 @@ export default {
           zoomToAccuracy: true //  定位成功后是否自动调整地图视野到定位点
         })
         map.addControl(geolocation)
-        // geolocation.getCurrentPosition(function(status, result) {
-        //   if (status === 'complete') {
-        //     // 暂时固定
-        //     _self.searchData(result.position.lng, result.position.lat)
-        //   } else {
-        //     // 定位失败
-        //     console.log(result)
-        //   }
-        // })
-        _self.searchData( _self.lng, _self.lat)
+        geolocation.getCurrentPosition(function(status, result) {
+          if (status === 'complete') {
+            // 暂时固定
+            _self.searchData(result.position.lng, result.position.lat)
+          } else {
+            // 定位失败
+            console.log(result)
+          }
+        })
+        // _self.searchData( _self.lng, _self.lat)
       })
       AMap.plugin(
         ['AMap.Geolocation', 'AMap.PlaceSearch', 'AMap.ToolBar'],
@@ -93,17 +93,27 @@ export default {
                 // pois = pois.filter(function(item) {
                 //   return res.indexOf(item.address) < 0
                 // })
-                resolve(res[0])
+                const index = address.indexOf(res[0])
+                console.log(index)
+                resolve(index)
               })
             });
             promise.then(data => {
               var markers = [];
               pois.forEach((item, index) => {
-                var marker = new AMap.Marker({
-                  map: map,
-                  position: [item.location.lng, item.location.lat],
-                  content: '<div class="content">距离您' + item.distance + '米</div>'
-                })
+                if(index !== data) {
+                  var marker = new AMap.Marker({
+                    map: map,
+                    position: [item.location.lng, item.location.lat],
+                    content: '<div class="content">距离您' + item.distance + '米</div>'
+                  })
+                } else {
+                    var marker = new AMap.Marker({
+                    map: map,
+                    position: [item.location.lng, item.location.lat],
+                    content: '<div class="content">该卫生间评分较低!</div>'
+                  })
+                }
                 markers.push(marker)
               })
             })
