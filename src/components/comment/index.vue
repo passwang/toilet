@@ -79,7 +79,7 @@ export default {
     sublitComent() {
       let formData = new FormData()
       formData.append('username', this.username)
-      formData.append('phone', this.phone)
+      formData.append('mobile', parseInt(this.phone))
       formData.append('address', this.address)
       formData.append('comment', this.message)
       for (let i = 0; i < this.filesArr.length; i++) {

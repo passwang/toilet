@@ -22,8 +22,8 @@ const Message = msg => {
   })
 }
 var service = axios.create({
-  baseURL: process.env.BASE_URL
-  // withCredentials: true
+  baseURL: process.env.BASE_URL,
+  withCredentials: true
   // timeout: 5000
 });
 

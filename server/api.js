@@ -30,7 +30,6 @@ exports.filterAddress = function(req, res, next) {
   })
  });
 promise.then(data => {
-  console.log(data)
     res.send(data)
  })
 }
@@ -117,9 +116,14 @@ exports.submitComment = function(req, res, next) {
       for(let i = 0;i<req.files.length;i++) {
           pictures.push(req.files[i].filename)
       }
-     var param = {}
-     Object.assign(param, req.body, {'picture': pictures})
-     db.insertArray('comments', [param], function(err, result) {
+     var params = {
+       'username': req.body.username,
+       'mobile': parseInt(req.body.mobile),
+       'address': req.body.address,
+       'comment': req.body.comment
+     }
+     Object.assign(params, {'picture': pictures})
+     db.insertArray('comments', [params], function(err, result) {
         if(err) {
             return res.send('-1');
         } else {
@@ -149,12 +153,12 @@ exports.submitComment = function(req, res, next) {
 
   //user
   exports.getUser = function(req, res, next) {
-    const username = req.session.username
-    db.find('users',{'username': username}, function(err, data) {
+    const mobile = req.session.mobile
+    db.find('users',{'mobile': mobile}, function(err, data) {
         if(err) {
             return res.send('-1');
         }
-    db.find('comments',{'username': username}, function(err, comments) {
+    db.find('comments',{'mobile': mobile}, function(err, comments) {
       if(err) {
           return res.send('-1');
       }
@@ -172,18 +176,29 @@ exports.submitComment = function(req, res, next) {
   exports.updateName = function(req, res, next) {
     const newName = req.query.username
     const oldName = req.session.username
-    db.update('users',{'username': oldName}, {$set:{"username": newName}}, function(err, result) {
-        if(err) {
-            return res.send('-1');
-        }
-      req.session.username = newName
-      return res.send({status: true})
+    db.find('users',{'username': newName}, function(err, data) {
+      if(err) {
+          return res.send('-1');
+      } else if (data.length > 0) {
+        return res.send({
+          status: false,
+          message: '用户名已存在!'
+        })
+      } else {
+          db.update('users',{'username': oldName}, {$set:{"username": newName}}, function(err, result) {
+              if(err) {
+                  return res.send('-1');
+              }
+            req.session.username = newName
+            return res.send({status: true})
+          })
+       }
     })
   }
   exports.updateAvatar = function(req, res, next) {
     const avatar = req.file.filename
-    const username = req.session.username
-    db.update('users',{'username': username},{$set:{"avatar": avatar}}, function(err, result) {
+    const mobile = parseInt(req.session.mobile)
+    db.update('users',{'mobile': mobile},{$set:{"avatar": avatar}}, function(err, result) {
         if(err) {
             return res.send('-1');
         }
@@ -259,6 +274,7 @@ exports.doRegist = function(req, res, next) {
       } else {
         req.session.login = true;
         req.session.username = username;
+        req.session.mobile = parseInt(mobile)
        return res.send({status: true})
       }
     })
@@ -304,6 +320,7 @@ exports.doLogin = function(req, res, next) {
     }else if (password === result[0].password) {
         req.session.login = true
         req.session.username = username;
+        req.session.mobile = parseInt(result[0].mobile)
         return res.send({status: true});
     } else {
       return res.send({

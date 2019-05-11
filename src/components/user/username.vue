@@ -50,6 +50,8 @@ export default {
               path: '/user/edit'
             })
           }, 500)
+        } else if (res.status === false) {
+          this.$toast(res.message)
         }
       })
     }

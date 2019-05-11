@@ -87,6 +87,7 @@ export default {
         for (let i = 0; i < keyWords.length; i++) {
           placeSearch.searchNearBy(keyWords[i], [lng, lat], 1000, function(status, result) {
             let pois = result.poiList.pois
+            console.log(pois)
             const address = _self.handleData(result.poiList.pois)
             var promise = new Promise(function (resolve, reject) {
               filterData({'place': JSON.stringify(address)}).then(res => {
