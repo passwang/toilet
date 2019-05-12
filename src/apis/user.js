@@ -11,6 +11,10 @@ export function updateAvatar(data) {
 export function sendMobileCode(data) {
   return http.get('/api/login/sendMobileCode', data)
 }
+export function sendResetCode(data) {
+  return http.get('/api/login/sendResetCode', data)
+}
+
 export function doRegist(data) {
   return http.post('/api/regist', data)
 }

@@ -40,7 +40,7 @@ export default {
     }
   },
   created() {
-    this.avatar = '/static/avatars/' + this.$route.params.avatar
+    this.avatar = this.$route.params.avatar
   },
   methods: {
     onClickLeft() {

@@ -2,7 +2,7 @@
   <div class="user">
       <van-nav-bar title="我的" @click-right="logout"><van-icon name="ellipsis" slot="right" /></van-nav-bar>
     <div class="user-message">
-        <div class="user-img"><img class="user-avater" :src="'/static/avatars/' + img" width="100px" height="100px"></div>
+        <div class="user-img"><img class="user-avater" :src="img" width="100px" height="100px"></div>
         <div class="user-name">{{username}}</div>
     </div>
     <van-cell-group class="user-group">
@@ -13,6 +13,7 @@
            <van-cell v-for="(item,index) in comments" :key="index" :value="item" class="user-comment"></van-cell>
         </van-collapse-item>
     </van-collapse>
+    <div style="height: 50px"></div>
     <van-actionsheet
         v-model="show"
         :actions="actions"

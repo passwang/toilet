@@ -24,7 +24,7 @@ app.all('*', function (req, res, next) {
   else next();
 });
 
-app.use('/static', express.static(path.join(__dirname, './public')))
+app.use('/static', express.static(path.join(__dirname, '../static')))
 // 部署上线时读取静态文件
 app.use(express.static(path.join(__dirname, '../dist')));
 

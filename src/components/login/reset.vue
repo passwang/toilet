@@ -38,9 +38,14 @@ export default {
       })
     },
     ToLogin() {
-      doReset({ 'passwod': this.password, 'mobile': this.$route.params.mobile }).then(res => {
-        this.$toast('您已经修改成功，即将跳到登录页面')
+      console.log(this.password)
+      doReset({ 'password': this.password, 'mobile': this.$route.params.mobile }).then(res => {
         if (res.status === true) {
+          this.$toast.loading({
+            mask: true,
+            duration: '200',
+            message: '修改成功，即将跳到登录'
+          })
           this.$router.push({
             path: '/login'
           })

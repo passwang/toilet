@@ -196,7 +196,7 @@ exports.submitComment = function(req, res, next) {
     })
   }
   exports.updateAvatar = function(req, res, next) {
-    const avatar = req.file.filename
+    const avatar = req.file.path
     const mobile = parseInt(req.session.mobile)
     db.update('users',{'mobile': mobile},{$set:{"avatar": avatar}}, function(err, result) {
         if(err) {
@@ -209,54 +209,94 @@ exports.submitComment = function(req, res, next) {
   // 发送短信验证码
   exports.sendMobileCode = function(req, res, next) {
     // 测试数据
-    req.session.mobile = 111111
-    res.send({status: true})
-//     let mobile= parseInt(req.query.mobile)
-//     db.find('users',{'mobile': mobile}, function(err, result) {
-//       if(err) {
-//           return res.send('-1');
-//       } else if (result.length > 0) {
-//         return res.send('1');  //用户已经注册过
-//       } else {
-//     // 6位随机验证码
-//     let random=Math.ceil(Math.random()*1000000)
-//     // req.session.mobile = random
-//     // 短信内容
-//     let text=`【王小芳test】您的验证码是${random}。如非本人操作，请忽略本短信`
-//     // 报文请求头
-//     let options = {
-//         method:'post',
-//         url: config.SMS.URL,
-//         headers: {
-//             'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'
-//         },
-//         form:{
-//             apikey:config.SMS.APIKEY,
-//             mobile:mobile,
-//             text:text,
-//         }
-//     }
-//     request(options, function(error, response, body) {
-//         if (!error && response.statusCode == 200) {
-//            res.send({
-//                status:true,
-//                message:body,
-//                checkCode:random
-//            })
-//         }else if (!error && response.statusCode != 200) {
-//             res.send({
-//                 status:false,
-//                 message:body
-//             })
-//         }else{
-//             res.send({
-//                 status:false,
-//                 message:error
-//             })
-//         }
-//     })
-//   }
-// })
+    let mobile= parseInt(req.query.mobile)
+    db.find('users',{'mobile': mobile}, function(err, result) {
+      if(err) {
+          return res.send('-1');
+      } else if (result.length > 0) {
+        return res.send('1');  //用户已经注册过
+      } else {
+    // 6位随机验证码
+    let random=Math.ceil(Math.random()*1000000)
+    req.session.mobile = random
+    // 短信内容
+    let text=`【王小芳test】您的验证码是${random}。如非本人操作，请忽略本短信`
+    // 报文请求头
+    let options = {
+        method:'post',
+        url: config.SMS.URL,
+        headers: {
+            'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'
+        },
+        form:{
+            apikey:config.SMS.APIKEY,
+            mobile:mobile,
+            text:text,
+        }
+    }
+    request(options, function(error, response, body) {
+        if (!error && response.statusCode == 200) {
+           res.send({
+               status:true,
+               message:body,
+               checkCode:random
+           })
+        }else if (!error && response.statusCode != 200) {
+            res.send({
+                status:false,
+                message:body
+            })
+        }else{
+            res.send({
+                status:false,
+                message:error
+            })
+        }
+    })
+  }
+})
+}
+
+exports.sendResetCode = function(req, res, next) {
+  // 测试数据
+  let mobile= parseInt(req.query.mobile)
+  // 6位随机验证码
+  let random=Math.ceil(Math.random()*1000000)
+  req.session.mobile = random
+  // 短信内容
+  let text=`【王小芳test】您的验证码是${random}。如非本人操作，请忽略本短信`
+  // 报文请求头
+  let options = {
+      method:'post',
+      url: config.SMS.URL,
+      headers: {
+          'Content-Type':'application/x-www-form-urlencoded;charset=utf-8'
+      },
+      form:{
+          apikey:config.SMS.APIKEY,
+          mobile:mobile,
+          text:text,
+      }
+  }
+  request(options, function(error, response, body) {
+      if (!error && response.statusCode == 200) {
+         res.send({
+             status:true,
+             message:body,
+             checkCode:random
+         })
+      }else if (!error && response.statusCode != 200) {
+          res.send({
+              status:false,
+              message:body
+          })
+      }else{
+          res.send({
+              status:false,
+              message:error
+          })
+      }
+  })
 }
 // 注册
 exports.doRegist = function(req, res, next) {
@@ -265,9 +305,10 @@ exports.doRegist = function(req, res, next) {
       'username': req.body.username,
       'password': crypto(req.body.password),
       'mobile': parseInt(req.body.mobile),
-      'avatar': 'user.png'
+      'avatar': '../static/avatars/default.png'
     }
     const username = req.body.username
+    const mobile = req.body.mobile
     db.insertArray('users', [params], function(err, result) {
       if(err) {
           return res.send('-1');
@@ -341,9 +382,10 @@ exports.checkForget = function(req, res, next) {
     })
   }
 }
+// 重置密码
 exports.doReset = function(req, res, next) {
   const password = crypto(req.body.password)
-  const mobile = req.body.mobile
+  const mobile = parseInt(req.body.mobile)
    db.update('users',{'mobile': mobile},{$set:{"password": password}}, function(err, result) {
         if(err) {
             return res.send('-1');

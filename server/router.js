@@ -7,7 +7,7 @@ var multer  = require('multer')
 // 定义上传文件路径及name
 var storage1 = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'public/uploads/')
+    cb(null, '../static/uploads')
   },
   filename: function (req, file, cb) {
     cb(null, (new Date()).getTime() + '.' + file.mimetype.replace('image/',''))
@@ -17,7 +17,7 @@ var upload = multer({ storage: storage1 })
 
 var storage2 = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, 'public/avatars/')
+    cb(null, '../static/avatars')
   },
   filename: function (req, file, cb) {
     cb(null, (new Date()).getTime() + '.' + file.mimetype.replace('image/',''))
@@ -73,6 +73,10 @@ router.post('/updateAvatar', avatar.single('file'), (req, res, next) => {
 // 发送短信验证码
 router.get('/login/sendMobileCode',(req, res, next) => {
   api.sendMobileCode(req, res, next)
+})
+// 忘记密码验证码
+router.get('/login/sendResetCode',(req, res, next) => {
+  api.sendResetCode(req, res, next)
 })
 // 注册
 router.post('/regist', (req, res, next) => {

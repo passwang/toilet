@@ -7,7 +7,7 @@
     <div class="login-group">
       <van-cell-group>
          <van-field
-            v-model="phone"
+            v-model="mobile"
             type="tel"
             label="手机号"
             placeholder="请输入手机号"
@@ -29,17 +29,17 @@
     </div>
 </template>
 <script>
-import { sendMobileCode, checkForget } from '@/apis/user.js'
+import { sendResetCode, checkForget } from '@/apis/user.js'
 export default {
   data() {
     return {
-      phone: '',
+      mobile: '',
       sms: ''
     }
   },
   methods: {
     sendNews() {
-      sendMobileCode({ 'mobile': this.phone }).then(res => {
+      sendResetCode({ 'mobile': this.mobile }).then(res => {
         if (res.status === true) {
           this.$toast('验证码已经成功发送！')
         } else if (res.ststus === false) {
@@ -54,15 +54,15 @@ export default {
     },
     handleStep() {
       const params = {
-        'mobile': this.phone,
+        'mobile': this.mobile,
         'sms': this.sms
       }
       checkForget(params).then(res => {
         if (res.status === true) {
           this.$router.push({
-            path: '/reset',
+            name: 'reset',
             params: {
-              mobile: this.phone
+              mobile: this.mobile
             }
           })
         } else if (res.status === false) {

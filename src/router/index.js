@@ -120,6 +120,7 @@ const router = new Router({
       }
     },
     {
+      name: 'reset',
       path: '/reset',
       component: Reset,
       meta: {
