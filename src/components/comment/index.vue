@@ -88,11 +88,10 @@ export default {
       if (this.flag) {
         submitResult(formData).then(res => {
           if (res === 1) {
-            this.$toast.success('成功反馈')
             this.$toast.loading({
             mask: true,
             duration: '500',
-            message: '加载中...'
+            message: '反馈成功'
           })
           this.$router.go(0)
           }

@@ -38,14 +38,14 @@ module.exports = {
         pathRewrite: {
           '^/api': '/api'
         }
-      },
-      '/static': {
-        target: 'http://localhost:3000',
-        changeOrigin: true,
-        pathRewrite: {
-            '^/static': '/static'
-        }
       }
+      // '/static': {
+      //   target: 'http://localhost:3000',
+      //   changeOrigin: true,
+      //   pathRewrite: {
+      //       '^/static': '/static'
+      //   }
+      // }
     },
     // CSS Sourcemaps off by default because relative paths are "buggy"
     // with this option, according to the CSS-Loader README
