@@ -12,7 +12,7 @@
               <span class="custom-text">头像</span>
               <img  :src="avatar" class="title-avater"/>
             </template>
-      </van-cell>
+      </van-cell>u
       <van-cell title="名字" is-link  :value="username" :to="{name: 'Editname', params: {username: username}}"/>
     </van-cell-group>
   </div>

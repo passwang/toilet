@@ -2,12 +2,14 @@
   <div id="map" style="width:100%; height:calc(100%)">
     <div id="container" style="width:100%; height:93%">
     </div>
-    <van-button type="primary" class="btn" size="small" @click="handleShow">点击展开/收缩全部列表</van-button>
+    <van-button type="primary" class="all-btn" size="small" @click="handleShow">点击展开/收缩全部列表</van-button>
     <div id="panel" v-show="show"></div>
+    <div id="panelWalk"></div>
   </div>
 </template>
 <script>
-import { filterData } from '@/apis/location'
+import Vue from 'vue'
+import { getNumberData } from '@/apis/location'
 import AMap from 'AMap'
 var mapListText = []
 //  var geolocation, markers
@@ -29,7 +31,9 @@ export default {
       lng: '108.90217',
       lat: '34.154305',
       show:  false,
-      data: ''
+      data: '',
+      close:false,
+      number: '暂无评价'
     }
   },
   methods: {
@@ -86,51 +90,55 @@ export default {
         placeSearch = new AMap.PlaceSearch(placeSearchOptions)
         for (let i = 0; i < keyWords.length; i++) {
           placeSearch.searchNearBy(keyWords[i], [lng, lat], 1000, function(status, result) {
-            let pois = result.poiList.pois
-            console.log(pois)
-            const address = _self.handleData(result.poiList.pois)
-            var promise = new Promise(function (resolve, reject) {
-              filterData({'place': JSON.stringify(address)}).then(res => {
-                // pois = pois.filter(function(item) {
-                //   return res.indexOf(item.address) < 0
-                // })
-                const index = address.indexOf(res[0])
-                console.log(index)
-                resolve(index)
-              })
-            });
-            promise.then(data => {
-              var markers = [];
-              pois.forEach((item, index) => {
-                if(index !== data) {
-                  var marker = new AMap.Marker({
-                    map: map,
-                    position: [item.location.lng, item.location.lat],
-                    content: '<div class="content">距离您' + item.distance + '米</div>'
-                  })
-                } else {
-                    var marker = new AMap.Marker({
-                    map: map,
-                    position: [item.location.lng, item.location.lat],
-                    content: '<div class="content">该卫生间评分较低!</div>'
-                  })
-                }
-                markers.push(marker)
-              })
-            })
           })
+        }
+        AMap.event.addListener(placeSearch,"markerClick",function(e) {
+            _self.getNumber(e.data.address)
+            var content = [];
+            content.push('<div id="infoCard">')
+            content.push(`距离您直线距离${e.data.distance}米`)
+            content.push(`地址:${e.data.address}`)
+            content.push(`评分:${_self.number}`)
+            content.push(`到这里去:<input type="button"  id=${e.index + 1} class="btn-walk" value="步行"/>`)
+            content.push('</div>')
+            var infoWindow = new AMap.InfoWindow({offset: new AMap.Pixel(0, -30)});
+            infoWindow.setContent(content.join("<br/>"));
+            infoWindow.open(map, [e.data.location.lng,e.data.location.lat]);
+            document.getElementById("container").addEventListener('click',function(event){
+               var target = event.target;
+               const value = target.id
+               if(target.className === 'btn-walk' && (e.index + 1) === parseInt(value)) {
+                var walking = new AMap.Walking({
+                     map: map,
+                     panel: "panelWalk"
+                 });
+                walking.search([ _self.lng, _self.lat],[e.data.location.lng,e.data.location.lat], function(status, result) {
+                  if (status === 'complete') {
+                  } else {
+                    console.log(result)
+                  } 
+              })
+           }
+           event.stopPropagation()
+        })
+      })
+    })
+    },
+    getNumber(address) {
+      getNumberData({ 'address': address}).then(res => {
+        const value = res[0]
+        if(value === undefined) {
+           this.number = '暂无评价'
+        } else {
+          this.number = res[0].number 
         }
       })
     },
     handleShow() {
       this.show = !this.show
     },
-    handleData(data) {
-      const arr = [];
-      data.forEach(item => {
-        arr.push(item.address)
-      })
-      return arr
+    handleClose() {
+      this.close = false
     }
   }
 }
@@ -149,16 +157,16 @@ export default {
   height: 100%;
   font-size: 15px;
 }
-#map .btn {
+#map .all-btn {
    position: fixed;
     max-height: 90%;
     overflow-y: auto;
     top: 10px;
     right: 10px;
     background: #07c160;
-    z-index: 999;
+    z-index: 1;
 }
-#map .btn .van-button--primary {
+#map .all-btn .van-button--primary {
   background: #07c160;
 }
 #panel {
@@ -171,11 +179,48 @@ export default {
     width: 280px;
     /* border-bottom: solid 1px silver; */
 }
+#map .amap-info-content .btn-walk {
+  position: relative;
+  width: 5rem;
+  left: 1rem;
+  margin: 10px 0 0 0;
+  border-radius: 5px;
+  background: #ffffff;
+  border-color: #25A5F7;
+  color: #25A5F7;
+  padding: .25rem .5rem;
+  line-height: 1.5;
+  border-radius: 1rem;
+}
+#panelWalk {
+   position: fixed;
+    background-color: white;
+    max-height: 90%;
+    overflow-y: auto;
+    top: 10px;
+    right: 10px;
+    width: 280px;
+    z-index: 2;
+}
+#panelWalk .close-btn {
+  position: absolute;
+  top: 0px;
+}
+  #panelWalk .amap-call {
+    background-color: #009cf9;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+}
+  #panelWalk .amap-lib-walking {
+    border-bottom-left-radius: 4px;
+      border-bottom-right-radius: 4px;
+      overflow: hidden;
+  }
 .content{
   position: relative;
   left: 2em;
   width: 10em;
-  height: 2em;
+  height: 2;
   line-height: 2em;
   border-radius: 5px;
   background-color:#FFF;

@@ -4,6 +4,7 @@ import Home from 'components/home'
 import Location from 'components/location/index'
 import Read from 'components/read/index'
 import Comments from 'components/comment/index'
+import Place from 'components/comment/place'
 import User from 'components/user/index'
 import ReadContent from 'components/read/readCon'
 import Edit from 'components/user/edit'
@@ -50,8 +51,17 @@ const router = new Router({
           }
         },
         {
+          name: 'comment',
           path: '/comment',
           component: Comments,
+          meta: {
+            isLogin: true
+          }
+        },
+        {
+          name: 'place',
+          path: '/comment/place',
+          component: Place,
           meta: {
             isLogin: true
           }

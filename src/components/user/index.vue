@@ -2,7 +2,7 @@
   <div class="user">
       <van-nav-bar title="我的" @click-right="logout"><van-icon name="ellipsis" slot="right" /></van-nav-bar>
     <div class="user-message">
-        <div class="user-img"><img class="user-avater" :src="img" width="100px" height="100px"></div>
+        <div class="user-img"><img class="user-avater" src="../../assets/imgs/user.png" width="100px" height="100px"></div>
         <div class="user-name">{{username}}</div>
     </div>
     <van-cell-group class="user-group">
@@ -49,7 +49,7 @@ export default {
       getUser().then(res => {
         const data = res[0]
         this.username = data.username
-        this.img = data.avatar
+        this.img = '1557634914093.jpeg'
         this.comments = data.comments.length === 0 ? ['你还没有反馈哦'] : data.comments
       })
     },

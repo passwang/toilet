@@ -13,26 +13,14 @@ var ObjectId = require('mongodb').ObjectId
 
 
 exports.filterAddress = function(req, res, next) {
- const data = JSON.parse(req.body.place)
- const resultData = []
- var promise = new Promise(function (resolve, reject) {
- data.forEach((item, index) => {
-    db.find('comments', { $and: [{'address': {'$regex': item}},{'number': {'$lte': 2}}]}, function(err, result) {
+ const address = req.body.address
+    db.find('comments', {'address': address}, function(err, result) {
       if(err) {
         return res.send('-1');
       } else {
-        if(result.length > 0) {
-          resultData.push('')
+          return res.send(result)
         }
-      }
-      resolve(resultData)
     })
-  })
- });
-promise.then(data => {
-  console.log(data)
-    res.send(data)
- })
 }
 
 // read
@@ -121,7 +109,8 @@ exports.submitComment = function(req, res, next) {
        'username': req.body.username,
        'mobile': parseInt(req.body.mobile),
        'address': req.body.address,
-       'comment': req.body.comment
+       'comment': req.body.comment,
+       'type': req.body.type
      }
      Object.assign(params, {'picture': pictures})
      db.insertArray('comments', [params], function(err, result) {
@@ -351,6 +340,7 @@ exports.checkUsername = function (req, res, next) {
 exports.doLogin = function(req, res, next) {
   const username = req.body.username
   const password = crypto(req.body.password)
+  console.log(username)
   db.find('users',{'username': username}, function(err, result) {
     if(err) {
         return res.send('-1');
