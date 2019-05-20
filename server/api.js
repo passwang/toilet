@@ -340,7 +340,6 @@ exports.checkUsername = function (req, res, next) {
 exports.doLogin = function(req, res, next) {
   const username = req.body.username
   const password = crypto(req.body.password)
-  console.log(username)
   db.find('users',{'username': username}, function(err, result) {
     if(err) {
         return res.send('-1');
