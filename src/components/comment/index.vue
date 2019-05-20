@@ -106,10 +106,12 @@ export default {
           if (res === 1) {
             this.$toast.loading({
             mask: true,
-            duration: '500',
+            duration: '1000',
             message: '反馈成功'
-          })
-          this.$router.go(0)
+             })
+          setTimeout(() => {
+            this.$router.go(0)
+          }, 500)
           }
         })
       }
@@ -123,7 +125,6 @@ export default {
    watch: {
     $route(to, from) {
      if(from.name === 'place') {
-       console.log(from)
        this.address = this.$route.params.address
      }
     }

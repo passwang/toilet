@@ -7,12 +7,12 @@
             @click-left="onClickLeft"
         />
     <van-cell-group class="user-group">
-      <van-cell title="头像" is-link :to="{name: 'Editavatar', params: { avatar: avatar}}" class="edit-avater">
+      <!-- <van-cell title="头像" is-link :to="{name: 'Editavatar', params: { avatar: avatar}}" class="edit-avater">
            <template slot="title">
               <span class="custom-text">头像</span>
               <img  :src="avatar" class="title-avater"/>
             </template>
-      </van-cell>u
+      </van-cell> -->
       <van-cell title="名字" is-link  :value="username" :to="{name: 'Editname', params: {username: username}}"/>
     </van-cell-group>
   </div>

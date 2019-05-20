@@ -50,7 +50,8 @@ export default {
         const data = res[0]
         this.username = data.username
         this.img = '1557634914093.jpeg'
-        this.comments = data.comments.length === 0 ? ['你还没有反馈哦'] : data.comments
+        const comments = data.comments.filter(function(item) { return item})
+        this.comments = comments.length === 0 ? ['你还没有反馈哦'] : data.comments
       })
     },
     onCancel() {
