@@ -127,13 +127,14 @@ exports.submitComment = function(req, res, next) {
            return res.send('-1');
        } else {
        return res.send(result)
-       }
+       }                                                                                                                                                                                                                              
    })
  }
  exports.saveComments = function(req, res, next) {
   const id = ObjectId(req.body._id)
   const number = parseInt(req.body.number)
-    db.update('comments',{'_id': id}, {$set: {'number': number}}, function(err, result) {
+  const status = req.body.status
+    db.update('comments',{'_id': id}, {$set: {'number': number, 'status': status}}, function(err, result) {
       if(err) {
         return res.send('-1');
       }
