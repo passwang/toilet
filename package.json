@@ -12,10 +12,10 @@
   },
   "dependencies": {
     "axios": "^0.17.0",
-    "body-parser": "^1.18.3",
+    "body-parser": "^1.20.1",
     "connect-multiparty": "^2.2.0",
     "cookie-parser": "^1.4.3",
-    "express": "^4.14.1",
+    "express": "^4.18.2",
     "express-session": "^1.15.6",
     "fastclick": "^1.0.6",
     "formidable": "^1.2.1",
